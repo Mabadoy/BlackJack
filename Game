@@ -1,0 +1,96 @@
+import random
+import os
+import time
+
+# Define card values and suits
+card_values = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]  # 11 is Ace
+card_names = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
+
+def draw_card():
+    return random.choice(card_values)
+
+def calculate_score(hand):
+    score = sum(hand)
+    num_aces = hand.count(11)
+    while score > 21 and num_aces > 0:
+        score -= 10
+        num_aces -= 1
+    return score
+
+def print_hand(name, hand):
+    cards = [card_names[v-1] for v in hand]
+    print(f"{name}'s hand: {' '.join(cards)} (Score: {calculate_score(hand)})")
+
+def clear_console():
+    # Clear the console based on the operating system
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def play_blackjack():
+    clear_console()
+    print("Welcome to Blackjack ♣♦♥♠!")
+
+    # Deal initial hands
+    user_hand = [draw_card(), draw_card()]
+    computer_hand = [draw_card(), draw_card()]
+
+    # Reveal the computer's first card
+    print_hand("Computer (one card)", [computer_hand[0]])
+    print_hand("User", user_hand)
+
+    # Check for blackjack
+    if calculate_score(computer_hand) == 21:
+        print("Computer has blackjack! You lose.")
+        return
+    elif calculate_score(user_hand) == 21:
+        print("User has blackjack♣♦♥♠!")
+
+    # User's turn
+    while calculate_score(user_hand) <= 21:
+        action = input("Do you want to 'hit' or 'stand'? ").strip().lower()
+        if action == 'hit':
+            user_hand.append(draw_card())
+            print_hand("User", user_hand)
+            if calculate_score(user_hand) > 21:
+                print("User busts! You lose.")
+                return
+        elif action == 'stand':
+            break
+        else:
+            print("Invalid input. Please type 'hit' or 'stand'.")
+
+    # Computer's turn
+    while calculate_score(computer_hand) < 17:
+        computer_hand.append(draw_card())
+
+    # Reveal the computer's full hand
+    clear_console()
+    print_hand("Computer", computer_hand)
+    print_hand("User", user_hand)
+
+    # Determine the winner
+    user_score = calculate_score(user_hand)
+    computer_score = calculate_score(computer_hand)
+
+    if user_score > 21:
+        print("User busts! You lose.")
+    elif computer_score > 21:
+        print("Computer busts! You win♣♦♥♠!")
+    elif computer_score == 21 and user_score == 21:
+        print("Both have blackjack♣♦♥♠! Computer wins.")
+    elif computer_score == 21:
+        print("Computer has blackjack♣♦♥♠! You lose.")
+    elif user_score > computer_score:
+        print("You win♣♦♥♠!")
+    elif user_score < computer_score:
+        print("Computer wins♣♦♥♠!")
+    else:
+        print("It's a draw!")
+
+    # Ask if the user wants to play again
+    play_again = input("Do you want to play again? (yes/no) ").strip().lower()
+    if play_again == 'yes':
+        play_blackjack()
+    else:
+        print("Thank you for playing♣♦♥♠!")
+
+play_blackjack()
