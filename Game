@@ -46,7 +46,7 @@ def play_blackjack():
 
     # User's turn
     while calculate_score(user_hand) <= 21:
-        action = input("Do you want to 'hit' or 'stand'? ").strip().lower()
+        action = input("Do you want to dddd 'hit' or 'stand'? ").strip().lower()
         if action == 'hit':
             user_hand.append(draw_card())
             print_hand("User", user_hand)
